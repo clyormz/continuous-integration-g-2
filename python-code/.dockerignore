@@ -1,0 +1,8 @@
+# Git
+.gitignore
+.git
+# Python
+*__pycache__*
+*migrations*
+deployment.sh
+clean.sh

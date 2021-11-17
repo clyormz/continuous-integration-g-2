@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  python-app:
+    build: ./python-code/
+    environment:
+      USER: group2_user
+      PASSWORD: password
+      DB_HOST: group2_mysql
+      DB_NAME: group2_db
+    restart: always
+    ports:
+      - "8081:5000"
+    depends_on:
+      - group2_mysql
+    volumes: 
+    - type: bind
+      source: ./app-persistence/
+      target: /app/staticfiles/
+    networks:
+      - public
+      - private
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
+        reservations:
+          cpus: '0.5'
+          memory: 200M
+  group2_mysql:
+    image: harbor.tallerdevops.com/grupo3/mysql@sha256:a0a2699fe9133b68079099740338691e72e0f880325e28f1b1bdb7589d6a5be1
+    restart: always
+    environment:
+      MYSQL_DATABASE: group2_db
+      MYSQL_USER: group2_user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - private
+volumes:
+  mysql-data:
+networks:
+  public:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.19.0.0/16
+  private:
+    driver: bridge
