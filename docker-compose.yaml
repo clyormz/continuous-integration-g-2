@@ -17,7 +17,7 @@ services:
       source: ./app-persistence/
       target: /app/staticfiles/
     networks:
-      - network1
+      - network01
     deploy:
       replicas: 1
       placement:
@@ -45,11 +45,11 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - network2
+      - network02
 volumes:
   mysql-data:
 networks:
  network1:
-     name: network1
+     name: network01
  network2:
-     name: network2
+     name: network02
